@@ -91,7 +91,7 @@ Phone_entry.grid(row=3,column=1,pady=2,sticky="ew")
 button_frame = Frame(root)
 button_frame.grid(row=1, column=0, pady=5, sticky="ew")
 
-Button(button_frame, text="Create Table").grid(row=0, column=1, padx=5)
+Button(button_frame, text="Create Table",command=create_table).grid(row=0, column=1, padx=5)
 Button(button_frame, text="Add Data", command=insert_data).grid(row=0, column=2, padx=5)
 Button(button_frame, text="Update Data",command=update_data).grid(row=0, column=3, padx=5)
 Button(button_frame, text="Delete Data",command=delete_data).grid(row=0, column=4, padx=5)
