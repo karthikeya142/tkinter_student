@@ -21,6 +21,11 @@ def run_query(query,parameters=()):
     return  query_result
 
 
+def create_table():
+    query = "CREATE TABLE IF NOT EXISTS student(student_id SERIAL PRIMARY KEY, name TEXT, address TEXT, age INT, number TEXT);"
+    run_query(query)
+    messagebox.showinfo("Information", "Table created successfully.")
+    refresh_treeview()
 def refresh_treeview():
     for item in tree.get_children():
         tree.delete(item)
@@ -30,11 +35,34 @@ def refresh_treeview():
 
 
 def insert_data():
-    query = "insert into students(name,address,age,numbrer) values(%s,%s,%s,%s)"
+    query = "insert into student(name,address,age,number) values(%s,%s,%s,%s)"
     parameters=(name_entry.get(),address_entry.get(),age_entry.get(),Phone_entry.get())
     run_query(query,parameters)
     messagebox.showinfo("Information","Data added sudccessfully")
     refresh_treeview()
+
+def delete_data():
+    try:
+        selected_item = tree.selection()[0]
+        student_id = tree.item(selected_item)['values'][0]
+        query = "delete from student where student_id = %s"
+        parameters = (student_id,)
+        run_query(query, parameters)
+        messagebox.showinfo("Information", "Data deleted successfully.")
+        refresh_treeview()
+    except IndexError:
+        messagebox.showwarning("Warning", "Please select a record to delete.")
+def update_data():
+    try:
+        selected_item = tree.selection()[0]
+        student_id = tree.item(selected_item)['values'][0]
+        query = "UPDATE student SET name = %s, address = %s, age = %s, number = %s WHERE student_id = %s"
+        parameters = (name_entry.get(), address_entry.get(), age_entry.get(), Phone_entry.get(), student_id)
+        run_query(query, parameters)
+        messagebox.showinfo("Information", "Data updated successfully.")
+        refresh_treeview()
+    except IndexError:
+        messagebox.showwarning("Warning", "Please select a record to update.")
 
 
 root = Tk()
@@ -43,22 +71,31 @@ frame = LabelFrame(root,text="Student data")
 frame.grid(row=0,column=0,padx=10,pady=10,sticky='ew')
 
 Label(frame, text="Name:").grid(row=0,column=0,padx=2,sticky="ew")
-name_entry=Entry(frame).grid(row=0,column=1,pady=2,sticky="ew")
+name_entry=Entry(frame)
+name_entry.grid(row=0,column=1,pady=2,sticky="ew")
 
 Label(frame, text="Address:").grid(row=1,column=0,padx=2,sticky="ew")
-address_entry=Entry(frame).grid(row=1,column=1,pady=2,sticky="ew")
+address_entry=Entry(frame)
+address_entry.grid(row=1,column=1,pady=2,sticky="ew")
 
 Label(frame, text="Age:").grid(row=2,column=0,padx=2,sticky="ew")
-age_entry=Entry(frame).grid(row=2,column=1,pady=2,sticky="ew")
+age_entry=Entry(frame)
+age_entry.grid(row=2,column=1,pady=2,sticky="ew")
 
 Label(frame, text="Phone Number:").grid(row=3,column=0,padx=2,sticky="ew")
-Phone_entry=Entry(frame).grid(row=3,column=1,pady=2,sticky="ew")
+Phone_entry=Entry(frame)
+Phone_entry.grid(row=3,column=1,pady=2,sticky="ew")
 
-button_frame=Frame(root).grid(row=0,column=0,pady=5,sticky="ew")
-Button(button_frame,text="Create Table").grid(row=4,column=1,padx=5)
-Button(button_frame,text="Add Data",command=insert_data).grid(row=4,column=2,padx=5)
-Button(button_frame,text="Update Data").grid(row=4,column=3,padx=5)
-Button(button_frame,text="Delete Data").grid(row=4,column=4,padx=5)
+# button_frame=Frame(root).grid(row=0,column=0,pady=5,sticky="ew")
+# Buttons for various operations
+button_frame = Frame(root)
+button_frame.grid(row=1, column=0, pady=5, sticky="ew")
+
+Button(button_frame, text="Create Table").grid(row=0, column=1, padx=5)
+Button(button_frame, text="Add Data", command=insert_data).grid(row=0, column=2, padx=5)
+Button(button_frame, text="Update Data",command=update_data).grid(row=0, column=3, padx=5)
+Button(button_frame, text="Delete Data",command=delete_data).grid(row=0, column=4, padx=5)
+
 
 tree_frame=Frame(root)
 tree_frame.grid(row=5,column=0, padx=10,sticky="nsew")
